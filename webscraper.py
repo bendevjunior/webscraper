@@ -7,16 +7,24 @@ html = requests.get("http://agrofit.agricultura.gov.br/agrofit_cons/!ap_produto_
 #soup = BeautifulSoup(html, 'html.parser')
 soup = BeautifulSoup(html, 'html5lib')
 table = soup.find("table", {"id": "documentosMAPA"})
-
+trbody = table.find('tbody')
 
 file = codecs.open("arquivos/documentos_cadastrados.txt", "w", "utf-8")
 titulos_documentos = ''
-
+collum = 0
 for tr in table.findAll('tr'): 
-    for td in tr.find('td'):
+    for td in tr.findAll('td'):
+        titulos_documentos += '\n'
+        titulos_documentos += 'cabeçalho'
+        titulos_documentos += '\n'
         if isinstance(td, NavigableString):
             continue
         if isinstance(td, Tag):
-            for l in td.children: 
-                titulos_documentos += '\n' + l
+            for t in td.children: 
+                if isinstance(t, NavigableString):
+                    continue
+                if isinstance(t, Tag): 
+                   for a in t.children:
+                       print(a)
+                       titulos_documentos += a + ' - '
 file.writelines(titulos_documentos)
